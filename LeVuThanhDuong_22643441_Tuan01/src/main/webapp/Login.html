@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Form Đăng Ký</title>
+</head>
+<body>
+<form action="login-servlet" method="post">
+  Tên: <input type="text" name="name"/><br/>
+  Mật khẩu: <input type="password" name="password"/><br/>
+  Giới tính:
+  <input type="radio" name="gender" value="Nam"/>Nam
+  <input type="radio" name="gender" value="Nữ"/>Nữ
+  <br/>
+  Quốc gia:
+  <select name="country">
+    <option value="VN">Việt Nam</option>
+    <option value="US">Mỹ</option>
+  </select>
+  <br/>
+  <input type="submit" value="Đăng ký"/>
+  <br/>
+  <a href="index.jsp">Quay lại</a>
+</form>
+</body>
+</html>
