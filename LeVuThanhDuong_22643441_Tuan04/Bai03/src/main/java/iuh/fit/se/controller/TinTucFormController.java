@@ -4,43 +4,27 @@ import iuh.fit.se.dao.DanhSachTinTucQuanLyDAO;
 import iuh.fit.se.dao.impl.DanhSachTinTucQuanLyDAOImpl;
 import iuh.fit.se.model.DanhMuc;
 import iuh.fit.se.model.TinTuc;
-import jakarta.servlet.ServletConfig;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.annotation.Resource;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.*;
 import javax.sql.DataSource;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-@WebServlet(name = "danhSachTinTucController", urlPatterns = "/danh-sach-tin-tuc")
-public class DanhSachTinTucController extends HttpServlet {
-    @Resource(name = "jdbc/quanlydanhmuc")
+import java.util.*;
+@WebServlet("/tin-tuc-form")
+public class TinTucFormController extends HttpServlet {
+    @Resource(name = "jdbc/quanlytintuc")
     private DataSource dataSource;
-
     private DanhSachTinTucQuanLyDAO dao;
 
     @Override
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        this.dao = new DanhSachTinTucQuanLyDAOImpl(this.dataSource);
-    }
+    public void init() { dao = new DanhSachTinTucQuanLyDAOImpl(dataSource); }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        String madm = req.getParameter("MADM");
-        DanhMuc danhMuc = new DanhMuc();
-        danhMuc.setId(madm);
-        List<TinTuc> list = dao.findAllTinTucByDanhMuc(danhMuc);
-        req.setAttribute("tinTucs", list);
         req.setAttribute("danhmucs", dao.findAllDanhMuc());
-        req.getRequestDispatcher("/views/danhSachTinTuc.jsp").forward(req, resp);
+        req.getRequestDispatcher("/views/tinTucForm.jsp").forward(req, resp);
     }
 
     @Override
@@ -54,6 +38,7 @@ public class DanhSachTinTucController extends HttpServlet {
         String maDM = req.getParameter("maDM");
         DanhMuc danhMuc = new DanhMuc();
         danhMuc.setId(maDM);
+
         Map<String, String> errors = new HashMap<>();
         if (maTT == null || maTT.isBlank()) errors.put("maTT", "Mã TT là bắt buộc");
         if (tieuDe == null || tieuDe.isBlank()) errors.put("tieuDe", "Tiêu đề là bắt buộc");
