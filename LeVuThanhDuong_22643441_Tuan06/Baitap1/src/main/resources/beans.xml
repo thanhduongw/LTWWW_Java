@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- Setter Injection đơn giản (trang 28) -->
+    <bean id="engine" class="iuh.fit.se.xmlconfig.ICEngine">
+        <property name="type" value="Diesel"/>
+    </bean>
+    <bean id="car" class="iuh.fit.se.xmlconfig.Car">
+        <property name="engine" ref="engine"/>
+    </bean>
+
+    <!-- Object Injection (trang 29-30) -->
+    <!-- Đã có ở trên, ref="engine" là object injection -->
+
+    <!-- Collection Injection (trang 31) -->
+    <bean id="carWithList" class="iuh.fit.se.xmlconfig.CarWithList">
+        <property name="parts">
+            <list>
+                <value>Wheel</value>
+                <value>Engine</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Literal Values Injection (trang 32) -->
+    <!-- Value="Diesel" ở trên là literal -->
+
+    <!-- Auto-wiring byName (trang 34): Tìm bean id khớp tên property (faculty) -->
+    <bean id="faculty" class="iuh.fit.se.autowiring.Faculty"/>
+    <bean id="studentByName" class="iuh.fit.se.autowiring.Student" autowire="byName"/>
+    <bean id="studentByType" class="iuh.fit.se.autowiring.Student" autowire="byType"/>
+    <bean id="studentConstructor" class="iuh.fit.se.autowiring.Student" autowire="constructor"/>
+
+</beans>
