@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- Bean sử dụng Setter Injection -->
+    <bean id="addressSetter" class="iuh.fit.se.springdi.Address">
+        <property name="city" value="Hanoi"/>
+        <property name="state" value="Ha Noi"/>
+        <property name="country" value="Vietnam"/>
+    </bean>
+
+    <bean id="employeeSetter" class="iuh.fit.se.springdi.Employee">
+        <property name="id" value="1"/>
+        <property name="name" value="Nguyen Van A"/>
+        <property name="address" ref="addressSetter"/>
+    </bean>
+
+    <!-- Bean sử dụng Constructor Injection -->
+    <bean id="addressConstructor" class="iuh.fit.se.springdi.Address">
+        <constructor-arg value="Ho Chi Minh"/>
+        <constructor-arg value="Ho Chi Minh"/>
+        <constructor-arg value="Vietnam"/>
+    </bean>
+
+    <bean id="employeeConstructor" class="iuh.fit.se.springdi.Employee">
+        <constructor-arg value="2"/>
+        <constructor-arg value="Tran Van B"/>
+        <constructor-arg ref="addressConstructor"/>
+    </bean>
+
+</beans>
