@@ -28,4 +28,39 @@ public class DepartmentDAO extends GenericDAO<Department> {
         }
         return null;
     }
+
+    public List<Department> findByName(String name) {
+        EntityManager em = JPAUtil.getEmf().createEntityManager();
+        try{
+            String jpql = """
+                    SELECT d FROM Department d WHERE d.name=:name
+                    """;
+            TypedQuery<Department> query = em.createQuery(jpql, Department.class);
+            query.setParameter("name", name);
+            return query.getResultList();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            em.close();
+        }
+        return null;
+    }
+
+    public void update(Department newDepartment){
+        EntityManager em = JPAUtil.getEmf().createEntityManager();
+        try{
+            em.getTransaction().begin();
+            Department department = em.find(Department.class,newDepartment.getId());
+            if(department != null){
+                department.setName(newDepartment.getName());
+            }
+            em.getTransaction().commit();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            em.close();
+        }
+    }
 }

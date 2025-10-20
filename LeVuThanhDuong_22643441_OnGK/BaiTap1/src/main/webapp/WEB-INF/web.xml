@@ -10,6 +10,6 @@
         <res-auth>Container</res-auth>
     </resource-ref>
     <welcome-file-list>
-        <welcome-file>department-list.jsp</welcome-file>
+        <welcome-file>departments</welcome-file>
     </welcome-file-list>
 </web-app>
