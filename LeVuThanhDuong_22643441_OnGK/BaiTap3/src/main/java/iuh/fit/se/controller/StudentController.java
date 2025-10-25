@@ -34,29 +34,81 @@ public class StudentController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String action = req.getParameter("action");
+        if (action == null) action = "list"; // Mặc định hiển thị danh sách
 
-        List<Student> studentList = studentDAO.findAll();
-        req.setAttribute("studentList", studentList);
-        req.getRequestDispatcher("/student-list.jsp").forward(req, resp);
+        switch (action) {
+            case "add" -> {
+                req.setAttribute("clazzList", clazzDAO.findAll());
+                req.getRequestDispatcher("/view/student-form.jsp").forward(req, resp);
+            }
+
+            case "edit" -> {
+                String id = req.getParameter("id");
+                Student student = studentDAO.findById(id);
+                req.setAttribute("student", student);
+                req.setAttribute("clazzList", clazzDAO.findAll());
+                req.getRequestDispatcher("/view/student-form.jsp").forward(req, resp);
+            }
+
+            case "detail" -> {
+                String id = req.getParameter("id");
+                Student student = studentDAO.findById(id);
+                req.setAttribute("student", student);
+                req.getRequestDispatcher("/view/student-detail.jsp").forward(req, resp);
+            }
+
+            default -> { // "list"
+                String name = req.getParameter("name");
+                List<Student> studentList;
+                if (name != null && !name.trim().isEmpty())
+                    studentList = studentDAO.findByClassName(name);
+                else
+                    studentList = studentDAO.findAll();
+
+                req.setAttribute("studentList", studentList);
+                req.getRequestDispatcher("/view/student-list.jsp").forward(req, resp);
+            }
+        }
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = req.getParameter("action");
+        if (action == null) action = "";
 
-        if(action!=null){
-            switch (action) {
-                case "add" ->{
+        switch (action) {
+            case "add", "update" -> {
+                String id = req.getParameter("mssv");
+                String name = req.getParameter("hoten");
+                String dob = req.getParameter("ngaysinh");
+                double score = Double.parseDouble(req.getParameter("diem"));
+                String malop = req.getParameter("malop");
 
-                }
-                case "delete" ->{
-                    String id = req.getParameter("id");
-                    if(id!=null){
-                        studentDAO.delete(id);
-                    }
-                    resp.sendRedirect("student");
-                }
+                Student student = new Student();
+                student.setId(id);
+                student.setName(name);
+                student.setDob(java.time.LocalDate.parse(dob));
+                student.setScore(score);
+                student.setClazz(clazzDAO.findById(malop));
+
+                if ("add".equals(action))
+                    studentDAO.add(student);
+                else
+                    studentDAO.update(student);
+
+                resp.sendRedirect("student");
             }
+
+            case "delete" -> {
+                String id = req.getParameter("id");
+                if (id != null && !id.isEmpty()) {
+                    studentDAO.delete(id);
+                }
+                resp.sendRedirect("student");
+            }
+
+            default -> resp.sendRedirect("student");
         }
     }
 }
