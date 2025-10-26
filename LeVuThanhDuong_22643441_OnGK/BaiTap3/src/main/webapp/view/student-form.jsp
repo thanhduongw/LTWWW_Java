@@ -64,27 +64,25 @@
 <div class="form-container">
     <h2>${student == null ? "Thêm sinh viên" : "Cập nhật sinh viên"}</h2>
 
-    <form action="student" method="post">
+    <form action="student" method="post" id="form">
         <input type="hidden" name="action" value="${student == null ? 'add' : 'update'}">
 
         <label>MSSV:</label>
-        <input type="text" name="mssv" value="${student.id}" ${student != null ? "readonly" : ""}>
+        <input type="text" name="mssv" value="${student.id}" ${student != null ? "readonly" : ""} required id="mssv">
 
         <label>Họ tên:</label>
-        <input type="text" name="hoten" value="${student.name}">
+        <input type="text" name="hoten" value="${student.name}" required id="hoten">
 
         <label>Ngày sinh:</label>
-        <input type="date" name="ngaysinh" value="${student.dob}">
+        <input type="date" name="ngaysinh" value="${student.dob}" required id="ngaysinh">
 
         <label>Điểm:</label>
-        <input type="number" name="diem" step="0.1" value="${student.score}">
+        <input type="number" name="diem" step="0.1" value="${student.score}" required id="diem">
 
         <label>Lớp:</label>
-        <select name="malop">
+        <select name="clazzId">
             <c:forEach items="${clazzList}" var="clazz">
-                <option value="${clazz.id}" ${student.clazz.id == clazz.id ? "selected" : ""}>
-                        ${clazz.name}
-                </option>
+                <option value="${clazz.id}" ${student != null && clazz.id == student.clazz.id ? 'selected' : ''}>${clazz.name}</option>
             </c:forEach>
         </select>
 
@@ -93,6 +91,32 @@
 
     <a href="student">← Quay lại danh sách</a>
 </div>
+
+<script>
+    document.getElementById('form').addEventListener("submit",(e)=>{
+        const mssv=document.getElementById('mssv').value.trim();
+        const hoten=document.getElementById('hoten').value.trim();
+        const ngaysinh=document.getElementById('ngaysinh').value.trim();
+        const diem=document.getElementById('diem').value.trim();
+
+        const mssvRegex = /^\d{6}$/;
+        const hotenRegex = /^[A-Za-z\s]+$/;
+        const diemRegex = /^(?:10(?:\.0+)?|[0-9](?:\.\d+)?)$/;
+        if(!mssvRegex.test(mssv)){
+            alert("MSSV phải chứa 6 số")
+            e.preventDefault()
+        }
+        if(!hotenRegex.test(hoten)){
+            alert("Tên không được chứa số hoặc ký tự đặc biệt");
+            e.preventDefault()
+        }
+        if(!diemRegex.test(diem)){
+            alert("Điểm phải từ 0 đến 10")
+            e.preventDefault()
+        }
+
+    })
+</script>
 
 </body>
 </html>

@@ -4,6 +4,7 @@ import iuh.fit.se.dao.ClazzDAO;
 import iuh.fit.se.dao.StudentDAO;
 import iuh.fit.se.dao.impl.ClazzDAOImpl;
 import iuh.fit.se.dao.impl.StudentDAOImpl;
+import iuh.fit.se.model.Clazz;
 import iuh.fit.se.model.Student;
 import jakarta.annotation.Resource;
 import jakarta.servlet.ServletConfig;
@@ -15,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet("/student")
@@ -35,11 +37,12 @@ public class StudentController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = req.getParameter("action");
-        if (action == null) action = "list"; // Mặc định hiển thị danh sách
+        if (action == null) action = "list";
 
         switch (action) {
             case "add" -> {
-                req.setAttribute("clazzList", clazzDAO.findAll());
+                List<Clazz> clazzList = clazzDAO.findAll();
+                req.setAttribute("clazzList", clazzList);
                 req.getRequestDispatcher("/view/student-form.jsp").forward(req, resp);
             }
 
@@ -47,7 +50,8 @@ public class StudentController extends HttpServlet {
                 String id = req.getParameter("id");
                 Student student = studentDAO.findById(id);
                 req.setAttribute("student", student);
-                req.setAttribute("clazzList", clazzDAO.findAll());
+                List<Clazz> clazzList = clazzDAO.findAll();
+                req.setAttribute("clazzList", clazzList);
                 req.getRequestDispatcher("/view/student-form.jsp").forward(req, resp);
             }
 
@@ -59,14 +63,33 @@ public class StudentController extends HttpServlet {
             }
 
             default -> { // "list"
+                List<Clazz> clazzList = clazzDAO.findAll();
+                req.setAttribute("clazzList", clazzList);
+
                 String name = req.getParameter("name");
-                List<Student> studentList;
-                if (name != null && !name.trim().isEmpty())
-                    studentList = studentDAO.findByClassName(name);
-                else
+                String clazzId = req.getParameter("clazzId");
+                List<Student> studentList = new ArrayList<>();
+
+//                if (clazzId != null && !clazzId.trim().isEmpty() && !"ALL".equals(clazzId)) {
+//                    Clazz selectedClazz = clazzDAO.findById(clazzId);
+//                    if (selectedClazz != null) {
+//                        studentList = studentDAO.findByClassName(selectedClazz.getName());
+//                    } else {
+//                        studentList = studentDAO.findAll();
+//                    }
+//                }
+//                else
+//                    studentList = studentDAO.findAll();
+
+                if (name != null && !name.trim().isEmpty()) {
+                    studentList = studentDAO.search(name);
+
+                } else {
                     studentList = studentDAO.findAll();
+                }
 
                 req.setAttribute("studentList", studentList);
+                req.setAttribute("selectedClazzId", clazzId);
                 req.getRequestDispatcher("/view/student-list.jsp").forward(req, resp);
             }
         }
@@ -83,14 +106,18 @@ public class StudentController extends HttpServlet {
                 String name = req.getParameter("hoten");
                 String dob = req.getParameter("ngaysinh");
                 double score = Double.parseDouble(req.getParameter("diem"));
-                String malop = req.getParameter("malop");
+                String classId = req.getParameter("clazzId");
+                Clazz clazz = null;
+                if(classId != null && !classId.isEmpty()){
+                    clazz = clazzDAO.findById(classId);
+                }
 
                 Student student = new Student();
                 student.setId(id);
                 student.setName(name);
                 student.setDob(java.time.LocalDate.parse(dob));
                 student.setScore(score);
-                student.setClazz(clazzDAO.findById(malop));
+                student.setClazz(clazz);
 
                 if ("add".equals(action))
                     studentDAO.add(student);

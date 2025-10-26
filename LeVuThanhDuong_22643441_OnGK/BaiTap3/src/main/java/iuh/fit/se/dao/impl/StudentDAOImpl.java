@@ -139,4 +139,35 @@ public class StudentDAOImpl implements StudentDAO {
         }
         return false;
     }
+
+    @Override
+    public List<Student> search(String keyword) {
+        List<Student> students = new ArrayList<>();
+        String sql = "SELECT * FROM sinhvien WHERE mssv LIKE ? OR hoten LIKE ?";
+        try (Connection connection = this.dataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            // Gán tham số LIKE cho các cột muốn tìm kiếm
+            String likeKeyword = "%" + keyword + "%";
+            ps.setString(1, likeKeyword);
+            ps.setString(2, likeKeyword);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Student student = new Student();
+                    student.setId(rs.getString("mssv"));
+                    student.setName(rs.getString("hoten"));
+                    student.setDob(rs.getDate("ngaysinh").toLocalDate());
+                    student.setScore(rs.getDouble("diem"));
+                    student.setClazz(clazzDAO.findById(rs.getString("malop")));
+                    students.add(student);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return students;
+    }
+
 }
