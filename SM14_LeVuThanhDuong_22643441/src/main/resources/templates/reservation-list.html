@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1 style="text-align: center; border-bottom: 1px solid black">SoMay14-LeVuThanhDuong-22643441</h1>
+<h2 style="text-align: center">DANH SÁCH ĐẶT BÀN</h2>
+<h3 style="text-align: end">
+    <a th:href="@{/table}">Thống kê bàn ăn</a>
+</h3>
+<a th:href="@{/reservation/form}">Dat ban</a>
+<table border="1" width="90%" style="margin: auto">
+    <tr>
+        <th>id</th>
+        <th>reservationNo</th>
+        <th>reservationDate</th>
+        <th>notes</th>
+        <th>customer</th>
+        <th>Action</th>
+    </tr>
+    <tr th:each="res : ${reservations}">
+        <td th:text="${res.id}"></td>
+        <td th:text="${res.reservationNo}"></td>
+        <td th:text="${res.reservationDate}"></td>
+        <td th:text="${res.notes}"></td>
+        <td th:text="${res.customer.fullName}"></td>
+        <td>
+            <form th:action="@{/reservation/delete/{id}(id=${res.id})}" method="post"
+                  onsubmit="return confirm('Bạn có chắc chắn muốn xoá?');">
+                <button type="submit">Xóa</button>
+            </form>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Form</title>
+</head>
+<body>
+<h1 style="text-align: center; border-bottom: 1px solid black">SoMay14-LeVuThanhDuong-22643441</h1>
+<h2 style="text-align: center">Reservation (Đặt bàn)</h2>
+<a th:href="@{/reservation}">Quay về</a>
+<form th:action="@{/table}" method="post">
+    <div>
+        <label>reservationNo</label>
+        <input type="text" required>
+    </div>
+    <div>
+        <label>reservationDate</label>
+        <input type="date" required>
+    </div>
+    <div>
+        <label>notes</label>
+        <input type="text" required>
+    </div>
+    <button type="submit">Submit</button>
+</form>
+</body>
+</html>

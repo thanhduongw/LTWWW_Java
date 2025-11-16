@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1 style="text-align: center; border-bottom: 1px solid black">SoMay14-LeVuThanhDuong-22643441</h1>
+<h2 style="text-align: center">THỐNG KÊ BÀN ĂN THEO TRẠNG THÁI</h2>
+<h4>So luong:</h4>
+<h4 th:text="${numOf}"></h4>
+<h3 style="text-align: end">
+  <a th:href="@{/reservation}">Reservation (Đặt bàn)</a>
+</h3>
+<form th:action="@{/table}" method="get">
+  <select name="statusId" onchange="this.form.submit()">
+    <option value="">All</option>
+    <option th:each="status : ${tableStatus}"
+            th:value="${status.id}"
+            th:text="${status.statusName}"
+            th:selected="${selected == status.id}">
+    </option>
+  </select>
+</form>
+<table border="1" width="90%" style="margin: auto">
+  <tr>
+    <th>id</th>
+    <th>tableNumber</th>
+    <th>capacity</th>
+    <th>status</th>
+  </tr>
+  <tr th:each="table : ${restaurantTables}">
+    <td th:text="${table.id}"></td>
+    <td th:text="${table.tableNumber}"></td>
+    <td th:text="${table.capacity}"></td>
+    <td th:text="${table.status.statusName}"></td>
+  </tr>
+</table>
+</body>
+</html>
